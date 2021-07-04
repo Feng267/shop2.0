@@ -1,0 +1,23 @@
+.mdd-header{
+    width: 63%;
+    height: 80px;
+    margin: auto;
+    background-color:blue;
+}
+
+.mdd-logo{
+    width: 25%;
+    height: 100%;
+    background-color: #00a0e9;
+
+    float: left;
+}
+
+.mdd-logo img{
+    padding-top: 7%;
+    padding-left:30%;
+}
+
+.mdd-right{
+    
+}
