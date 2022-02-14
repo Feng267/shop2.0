@@ -75,6 +75,7 @@
     let order_price = urlAttr.order_price;// 订单价格
     let order_id = urlAttr.order_id;// 订单ID
     let single = urlAttr.single;// 订单ID
+// 	console.log(order_price, order_id, single);
 
 	// 需要填充数据的页面标签
     let order_id_text = document.querySelector(".order_id_text");// 订单编号
@@ -103,6 +104,8 @@
 			url: 'api/order/status.php',
 			data: data,
 			success:function(value){
+				// console.log(value);
+				// var order_detail = document.querySelector('.order_detail');// 所有订单
 				var obj = JSON.parse(value);// 将JSON格式的数据解析成数组
 				let status = obj.status;
 				if(status == 1){
@@ -114,6 +117,10 @@
 				}
 				else
 					layerMsg(15);
+				// addr_count = obj.total;
+				// putAddressList(info);
+				
+
 			},
 			error:function(value){
 				console.log(value);

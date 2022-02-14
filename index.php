@@ -524,13 +524,14 @@
 	<!-- 秒杀信息 -->
 	<script type="text/javascript">
 		let cat_ids = [5,6,8,9,10,12,13,14,15,16,17,18,19,20,21,23,24,26,27,28,29,31,32,33,34,35,36,37,42,43,44,46,47,48,50,51,52,57,58,59,61,62,63,65,66,1007,94,96,97,99,100,102,103,104,105,106,107,108,110,113,114,115,116,117,118,121,122,123,124,126,127,128,129,130,131,132,133,136,137,138,139,140,142,143,144,146,147,148,149,150,151,152,153,154,156,158,159,160,161,162,163,164,165,166,167,168,174,176,177,178,179,187,188,189,190,191,192,193,194,195,196,198,201,202,203,204,205,208,209,210,211,214,215,216,217,218,219,220,225,231,232,233,235,236,237,239,240,241,242,243,244,247,251,253,254,255,256,257,258,259,260,262,263,264,265,268,269,270,271,272,273,274,275,276,277,279,283,284,285,286,287,293,294,295,296,297,299,300,303,304,305,306,307,308,310,311,312,313,314,316,317,318,326,327,328,329,330,333,334,335,337,339,340,341,343,344,345,346,347,348,349,350,352,353,354,355,359,363,364,365,366,368,369,372,373,374,375,376,377,379,380,381,382,383,385,386,387,388,390,392,393,395,397,398,399,400,401,403,404,410,411,414,415,416,417,418,421,422,423,424,427,428,429,430,431,432,433,434,436,437,439,440,441,442,];// 商品三级分类的id，目前没有写专门的API，暂时通过这样的方式实现随机效果
-
+		// console.log(cat_ids.length);
 		// 请求商品列表信息
 		var ajaxMenus={
 			method: 'get',
 			url: 'https://api-hmugo-web.itheima.net/api/public/v1/goods/search?cid=' + cat_ids[parseInt(Math.random()*(283+1),10)],
 			data:{},
 			success:function(value){
+				// var order_detail = document.querySelector('.order_detail');// 所有订单
 				var obj = JSON.parse(value);// 将JSON格式的数据解析成数组
 				var goods = obj.message.goods;
 				// console.log(goods);
@@ -538,6 +539,10 @@
 				let recommend = document.getElementsByClassName("Favourate")[0];// “今日推荐”的dom元素
 				let goods_item = seckill.children[1];
 				let goods_item_2 = recommend.children[0];
+				// console.log(goods_item_2);
+				// let a = goods_item.getElementsByTagName('a')[0];
+				// console.log(goods_item);onerror="imgError()"
+				// console.log(goods_item.getElementsByTagName('a')[0]);
 
 				// 渲染秒杀商品数据和今日推荐商品数据到页面				
 				putSeckillInfo(seckill, goods_item, goods[0]);
@@ -574,6 +579,7 @@
 			a.title = data.goods_name;
 			a.href = "item.php?goods_id=" + data.goods_id;
 			node.getElementsByTagName("p")[0].innerHTML = data.goods_name;// 商品名称
+			// a.href = "hhh";
 			let goods_price = data.goods_price;// 商品价格
 			if(goods_price == 0)// 价格为0时，改为99999
 				goods_price = 99999;
@@ -584,8 +590,32 @@
 			}
 			node.getElementsByClassName("lazyimg_img")[0].src = data.goods_small_logo;// 图片
 
-			parent_node.appendChild(node);// 将节点渲染到页面
+			parent_node.appendChild(node);
+			// console.log(parseInt(Math.random()*(43+1),10));
 		}
+
+		
+		// $.ajax({
+		// 	type: "get",
+		// 	url: "https://api-hmugo-web.itheima.net/api/public/v1/goods/search?cid=5",
+		// 	success: (res) => {
+		// 		// console.log(res)
+		// 		// var t=$(".goodsbox a p").php(res.message.goods[0].goods_name)
+
+		// 		var goodslist = $(".Recommend").children().eq(1)
+		// 		for (var i = 0; i < 3; i++) {
+		// 			var data = goodslist
+		// 			// console.log('----'+data.children().find('p').php(res.message.goods[i].goods_name))
+		// 			// console.log('----'+data.children().find('.sk_item_price').children().eq(0).php(res.message.goods[i].goods_price))
+		// 			var li_html = goodslist.php()
+
+		// 			var Li_list = "<li class='yui3-u-5-24'>" + li_html + "</li>"
+		// 			$(".Recommend").append(Li_list)
+		// 		}
+		// 		// console.log(goodslist)
+
+		// 	}
+		// })
 	</script>
 
 	
@@ -597,6 +627,59 @@
 		let cat_menu = document.getElementsByClassName('all-sort-list2')[0];
 		// 菜单栏子项（item）
 		let menu_items = cat_menu.children;
+
+		// onmouseleave="outCatMenu()"
+		/*
+			1、侧边菜单栏
+		 */
+		/*
+			本来是使用事件冒泡的，但发现不需要，所以注释了
+		 */
+		// 鼠标悬停事件
+		// function onCatMenu(ev) {
+
+		// 	var ev = ev || window.event;
+		// 	var target = ev.target || ev.srcElement;
+		// 	if (target.nodeName.toLowerCase() == 'h3') {
+		// 		let clearFix = target.nextElementSibling;
+		// 		// target.style.background = "gray";
+		// 		target.className = 'h3_choosen';
+		// 		clearFix.style.display = 'block';
+		// 	}
+		// 	if (target.nodeName.toLowerCase() == 'a') {
+		// 		let clearFix = target.parentNode.nextElementSibling;
+		// 		// console.log(clearFix.className);
+		// 		if(clearFix.className == 'item-list clearfix'){
+		// 			clearFix.style.display = 'block';
+		// 			clearFix.previousElementSibling.className = "h3_choosen";
+		// 		}
+		// 	}
+		// 	if (target.className.toLowerCase() == 'item-list clearfix') {
+		// 		let clearFix = target;
+		// 		// console.log(clearFix);
+		// 		clearFix.style.display = 'block';
+		// 	}
+		// }
+
+		// // 鼠标离开事件
+		// function outCatMenu(ev) {
+		// 	var ev = ev || window.event;
+		// 	var target = ev.target || ev.srcElement;
+		// 	// console.log(target.className, target.innerHTML, target);
+		// 	// target.className
+		// 	if (target.nodeName.toLowerCase() == 'h3') {
+		// 		let clearFix = target.nextElementSibling;
+		// 		// console.log('out');
+		// 		target.className = '';
+		// 		clearFix.style.display = 'none';
+		// 	}
+		// 	if (target.nodeName.toLowerCase() == 'a') {
+		// 		let clearFix = target.parentNode.nextElementSibling;
+		// 		// console.log('out');
+		// 		if(clearFix.className == 'item-list clearfix')
+		// 			clearFix.style.display = 'none';
+		// 	}
+		// }
 
 		// 请求商品分类信息
 		var ajaxMenus={
@@ -661,6 +744,7 @@
 </body>
 <?php
 	session_start();
+	// echo "<script>console.log('" . $_SESSION['user_id'] . "')</script>";
 ?>
 
 </html>

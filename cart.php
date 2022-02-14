@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="css/base.css" />   <!-- 页面头部css -->
     <link rel="stylesheet" type="text/css" href="css/layui.css">
     <link rel="stylesheet" type="text/css" href="css/cart.css">
+    <!-- <link type="text/css" rel="stylesheet"  href='all_style.css'>  连接 大部分css -->
     <link rel="stylesheet" href="./css/layui.css">   <!-- 引用的框架的css -->
     <!-- <script type="text/javascript" src="layui/layui.all.js"></script> -->
     <script src="./js/layui.all.js"></script>    <!-- 引用的框架  -->

@@ -6,6 +6,7 @@
 ?>
 <html lang="en">
 <head>
+    <link rel="icon" href="img/favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- <link rel="stylesheet" href="all_style.css">  标题栏和底部的样式 -->    

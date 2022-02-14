@@ -1,6 +1,6 @@
-    /**
-     * 订单详情页面的JavaScript代码
-     */
+    
+    // layer.msg('好的少侠，正在为您加紧发货呢！', { icon: 1 time: 1000, shade: [0.6, '#000', true] });
+
 
     // 订单主体的tab栏标签
     var list = document.querySelector('#c_list');// tab容器
@@ -23,6 +23,7 @@
             cons[index].className += ' order_show'// 将指定的div显示出来
 
             let detail_wrap_new = cons[i].querySelectorAll('.detail_wrap');
+            // console.log(detail_wrap_new.length);
             // 当前tab栏中订单数量过小，控制底部说明栏为粘脚。
             if(detail_wrap_new.length < 1){
                 rayState.style.display = 'block';
@@ -45,8 +46,13 @@
         data:{            
         },
         success:function(value){
+            // console.log(value);
+
+            // var order_detail = document.querySelector('.order_detail');// 所有订单
             var obj = JSON.parse(value);// 将JSON格式的数据解析成数组
+            // console.log([obj.data][0]);
             let order_amount = [obj.data][0].length;
+            // console.log(order_amount);
             if([obj.data][0])
                 isNull = create_detail_wrap([obj.data][0]);
             rayState.style.display = 'block';
@@ -78,35 +84,43 @@
         var order_detail = order_content_all.querySelector('.order_detail');// 多个订单详情的元素
         var detail_wrap = order_detail.querySelector('.detail_wrap');// 单个订单详情的外容器
 
+        // console.log(order_content_1, order_content_2, order_content_3, order_content_4);
         // 循环将返回的订单信息填入到相应的tab栏内容中
         for(var i = 0; i < order_arr.length; i++){                  
             var order_operation = ['评价','付款','催发货','确认收货'];// 各类型订单的按钮操作 
             var order_status = order_arr[i]['order_status'];
+            // console.log(order_status, 'order_status' );
             // var status = {'待付款':1,'已付款待发货':2,'已发货待收货':3,'已收货待评价':4,'历史订单':5};
             switch(order_status){
                 case '0': 
+                    // console.log('待付款', i);                    
                     var order_detail_1 = order_content_1.querySelector('.order_detail');// 多个订单详情的元素
+                    // console.log(order_detail_1);
                     write_detail_wrap(order_detail_1,detail_wrap, order_arr[i], order_operation[1]);// 插入到‘待付款’订单中
                     write_detail_wrap(order_detail,detail_wrap, order_arr[i], order_operation[1]);// 插入到‘所有订单’中
 
                     break;
                 case '1':
+                    // console.log('已付款待发货');                    
                     var order_detail_2 = order_content_2.querySelector('.order_detail');// 多个订单详情的元素
                     write_detail_wrap(order_detail_2,detail_wrap, order_arr[i], order_operation[2]);
                     write_detail_wrap(order_detail,detail_wrap, order_arr[i], order_operation[2]);// 插入到‘所有订单’中
                     
                     break;                    
                 case '2':
+                    // console.log('已发货待收货');                    
                     var order_detail_3 = order_content_3.querySelector('.order_detail');// 多个订单详情的元素
                     write_detail_wrap(order_detail_3,detail_wrap, order_arr[i], order_operation[3]);
                     write_detail_wrap(order_detail,detail_wrap, order_arr[i], order_operation[3]);// 插入到‘所有订单’中
                     break;
                 case '3':
+                    // console.log('已收货待评价');                    
                     var order_detail_4 = order_content_4.querySelector('.order_detail');// 多个订单详情的元素
                     write_detail_wrap(order_detail_4,detail_wrap, order_arr[i], order_operation[0]);
                     write_detail_wrap(order_detail,detail_wrap, order_arr[i], order_operation[1]);// 插入到‘所有订单’中
                     break;
                 default:
+                    // console.log('历史订单');
                     write_detail_wrap(order_detail,detail_wrap, order_arr[i], '再次购买');// 插入到‘所有订单’中
                     break;
             }
@@ -117,12 +131,15 @@
 
     // 生成dom元素并插入值
     function write_detail_wrap(new_order_detail,detail_wrap,order_arr, order_operation_txt){
+        // let godos_attr = order_arr['goods_attr'];
         let goods_attr_text = '';// 商品属性的文本
         goods_attr = JSON.parse(order_arr['goods_attr']);
         for(let i in goods_attr){
             goods_attr_text += i + ":  " + goods_attr[i] + " "
         }
         var new_detail_wrap = detail_wrap.cloneNode(true);// 获取单个订单容器下的值
+            // new_detail_wrap.querySelector('a').href = "item.php?goods_id=" + order_arr['goods_id'];
+            // new_detail_wrap.querySelector('a').style.display = "block";
             new_detail_wrap.querySelector('.order_goods_detail').onclick =function(){ 
                 window.location.href="item.php?goods_id=" + order_arr['goods_id'];      
                }// 绑定点击跳转事件，跳转到商品详情页面
@@ -143,15 +160,22 @@
                 new_detail_wrap.querySelector('.order_operation_txt').setAttribute("onclick", "layerMsg(7)");
             else if(order_operation_txt == '确认收货'){
                 new_detail_wrap.querySelector('.order_operation_txt').setAttribute("onclick", "orderOperation('" + order_arr['order_id'].toString() +"')");
+                // console.log(typeof order_arr['order_id'].toString(), order_arr['order_id'].toString());
             }
             else
                 new_detail_wrap.querySelector('.order_operation_txt').setAttribute("onclick", "layerMsg()");
                 
             new_order_detail.appendChild(new_detail_wrap);// 写入页面
     }
+
+    // 弹窗提示信息
+    // function layerMsg(e){
+    //     layer.msg('好的少侠，正在为您加紧发货呢！', { icon: 1, time: 1000, shade: [0.6, '#000', true] });
+    // }
     
     // 确认收货
     function orderOperation(order_id){
+        // console.log(order_id);
         // ajax请求
         var ajaxGetData={
             method: 'post',
@@ -160,6 +184,7 @@
                 order_id: order_id
             },
             success:function(value){
+                // console.log(typeof value, value,typeof order_id, order_id);
                 if(value==1){
                     layerMsg(4);
                     setTimeout(function (){                        

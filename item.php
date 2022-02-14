@@ -5,7 +5,7 @@
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
-	<title>商品详情页面</title>
+	<title>【华为nova 5 Pro】华为 HUAWEI nova 5 Pro</title>
 	<link rel="icon" href="img/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="css/base.css" />
 	<link rel="stylesheet" type="text/css" href="css/item.css" />
@@ -446,6 +446,8 @@
 		// 获取url携带的参数		
 		let urlAttr = GetRequest();
 		let goods_id = urlAttr.goods_id;// 商品ID
+
+		// console.log(goods_id);
 		if (!goods_id)
 			goods_id = 47858; // 若url中没有附带商品id则赋一个默认值 
 
@@ -457,9 +459,13 @@
 				goods_id: goods_id
 			},
 			success: function(value) {
+				// var order_detail = document.querySelector('.order_detail');// 所有订单
 				var obj = JSON.parse(value); // 将JSON格式的数据解析成数组
 				var goods_detail = obj.message;
+				// console.log(goods_detail);
 				putGoodsDetail(goods_detail); // 渲染页面
+
+
 			},
 			error: function(value) {
 				console.log(value);
@@ -475,16 +481,20 @@
 			goods_price.innerHTML = info.goods_price; // 商品价格
 			detail_content.innerHTML = info.goods_introduce; // 商品详情
 			document.title = info.goods_name; // 设置页面标题
+			// console.log(info);
 			// 填充小图片（ul>li>img)
 			info.pics.forEach(v => {
 				let li = document.createElement("li");
 				let mid_pic = small_pic.cloneNode(true);
 				mid_pic.src = v.pics_mid;
+				// mid_pic.bimg = v.pics_mid;
 				mid_pic.setAttribute("bimg", v.pics_mid);
 				li.appendChild(mid_pic);
 				small_pic_wrap.appendChild(li);
+				// console.log(v);
 			})
 			info.attrs.forEach(v => {
+				// console.log(v);
 				let att = attr.cloneNode(true);
 				att.title = v.attr_name;
 				att.innerHTML = v.attr_name + "：" + v.attr_value;
@@ -505,9 +515,11 @@
 				cat_three_id
 			} = info;
 			cat_ids = [cat_one_id, cat_two_id, cat_three_id];
+// 			console.log(cat_ids, 'cat_ids')
 			// 请求商品分类信息
 			var ajaxCatsInfo = {
 				method: 'get',
+				// url: 'https://api-hmugo-web.itheima.net/api/public/v1/categories',
 				url: "api/cats_name.php",
 				data: {
 					cat_one_id: cat_one_id,
@@ -515,41 +527,60 @@
 					cat_three_id: cat_three_id
 				},
 				success: function(value) {
+				// 	console.log(value, 'value');
+					// var order_detail = document.querySelector('.order_detail');// 所有订单
+					
 					var obj = JSON.parse(value); // 将JSON格式的数据解析成数组
 					cat_names = obj;// 分类名称数组
 					cat_names.forEach((v, i) => {
 						cats_name[i].innerHTML = v;
 						cats_name[i].href = "search.php?cat_id=" + cat_ids[i] + "&cat_level=" + i;
+						// console.log(i, v);
 					})
 					cats_name_wrap.children[3].innerHTML = info.goods_name;
 
 
 				},
 				error: function(value) {
-					console.log(value);
+					console.log(value, 'value');
 				}
 			}
 			$ajax(ajaxCatsInfo);
 
+			// console.log(cat_three_id, "cat_three_id" );
 			// 请求左侧”达人选购“商品信息
 			var ajaxRecommend = {
 				method: 'get',
 				url: 'https://api-hmugo-web.itheima.net/api/public/v1/goods/search',
+				// url:"api/cats_name.php",
 				data: {
 					cid: cat_three_id,
 					pagesize:100
 				},
 				success: function(value) {
+					// var order_detail = document.querySelector('.order_detail');// 所有订单
 					var obj = JSON.parse(value); // 将JSON格式的数据解析成数组
 					var goods_info = obj.message.goods;
+					// console.log(goods_info);
+					// recommend_list_wrap
 					goods_info.forEach(v => {
 						let node = recommend_item.cloneNode(true);
 						node.querySelector("a").href = "item.php?goods_id=" + v.goods_id; // 链接属性
 						node.querySelector("em").innerHTML = v.goods_name; // 商品名称
 						node.querySelector("i").innerHTML = v.goods_price; // 商品名称
 						node.querySelector("img").src = v.goods_small_logo; // 商品名称
+						// console.log(node);
 						recommend_list_wrap.appendChild(node);
 					})
+					// console.log(goods_info);
+					// cat_info.forEach((v, i)=>{
+					// 	cats_name[i].innerHTML = v;
+					// 	cats_name[i].href = "search.php?cat_id=" + cat_ids[i];
+					// 	// console.log(i, v);
+					// })
+					// cats_name_wrap.children[3].innerHTML = info.goods_name;
+
+
 				},
 				error: function(value) {
 					console.log(value);
@@ -590,6 +621,7 @@
 				goods_number: goods_number,
 				total_price: goods_number * parseInt(goods_price.innerHTML)
 			}
+			console.log(data);
 			// 加入购物车
 			var ajaxAddCart = {
 				method: 'post',
@@ -598,6 +630,7 @@
 				success: function(value) {
 					let obj = JSON.parse(value); // 将JSON格式的数据解析成数组
 					let status = parseInt(obj.status);
+					// console.log(status, typeof status);
 					layerMsg(status);
 					if(status == 3){// 未登录
 						setTimeout(function (){
@@ -615,6 +648,7 @@
 		// 立即购买
 		function buyNow(){
 			let goods_number = parseInt(document.querySelector('#goods_number_text').value);// 商品数量
+			// let goods_id_str = goods_id + '';
 			let goods_info = {
 				goods_id: goods_id,
 				goods_number: goods_number,
@@ -622,6 +656,13 @@
 			}
 			let goods_info_arr = [];
 			goods_info_arr[0] = goods_info;
+			// 模拟多个商品
+			// goods_info_arr[1] = {
+			// 	goods_id: 43985,
+			// 	goods_number: 2,
+			// 	goods_attr: getGoodsAttr()
+			// };
+			// console.log(typeof goods_info, goods_info);
 			let goods_info_json = JSON.stringify(goods_info_arr);// 商品信息
 
 			var ajaxGoodsInfo = {
@@ -631,9 +672,30 @@
 					goods_info: goods_info_json
 				},
 				success: function(value) {
+					// var order_detail = document.querySelector('.order_detail');// 所有订单
 					var obj = JSON.parse(value); // 将JSON格式的数据解析成数组
 					var status = obj.status;
-					window.open('get-orderinfo.php','_self');                        
+					// layerMsg(status);
+					// if(status == 3){// 未登录
+					// 	setTimeout(function (){
+					// 		window.open('login.php','_self');                        
+					// 	}, 2000);
+					// }
+					// setTimeout(function (){
+						window.open('get-orderInfo.php','_self');                        
+					// }, 2000);
+					// if(status == 1)
+						// window.location = "get-orderinfo.php";
+					// if(status == 3){// 未登录
+					// 	window.open('login.php','_self'); 
+					// 	setTimeout(function (){
+					// 		window.open('login.php','_self');                        
+					// 	}, 2000);
+					// }
+					// console.log(obj, typeof obj);
+					// putGoodsDetail(goods_detail); // 渲染页面
+
+
 				},
 				error: function(value) {
 					console.log(value);
@@ -655,7 +717,6 @@
 		}
 
 
-		// 执行函数
 		exclusive(s1, 's1');
 		exclusive(s2, 's2');
 		exclusive(s3, 's3');

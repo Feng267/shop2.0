@@ -62,12 +62,14 @@
         $sql = "insert into order_info(order_id, user_id, total_price, received_addr, received_tel, received_people) values(
             '$order_id', '$user_id', $order_summarys[$i], '$received_addr', '$received_tel','$received_people'
         )";
+        // echo $sql;
         $result = mysqli_query($conn,$sql);
         $count = mysqli_affected_rows($conn);
         // 插入订单详情表
         if($count == 1){
             $sql = "insert into order_detail(order_id, user_id, goods_id, cat_id, goods_attr, goods_price, goods_number, order_summary) values('$order_id', '$user_id', $goods_ids[$i], $cat_ids[$i], '$goods_attrs[$i]', $goods_prices[$i], $goods_numbers[$i], $order_summarys[$i]
             )";
+            // echo $sql;
             $result = mysqli_query($conn,$sql);
             $count = mysqli_affected_rows($conn);
         }
@@ -77,9 +79,12 @@
             $sql = "delete from shop_cart_info where numb = " .$goods_info[$i]['numb'] ;
             $result = mysqli_query($conn,$sql);
             $count_3 = mysqli_affected_rows($conn);
+            // $flag  = $$count_2;
         }
         
-        $flag  = $count;
+        $flag  = $count;// 插入成功标志
+        
+        
     }
     // 成功则提交事务，失败则回滚
     if($flag == 1){
@@ -90,7 +95,7 @@
         $result = mysqli_query($conn,$sql);
 
         // 返回错误信息
-        header("HTTP/1.1 400 error: insert failed!");
+        header("HTTP/1.1 401 error: insert failed!");
         $error['error'] = "error: insert failed!";
         header('Content-Type:application/json');
         $res_json = json_encode($error, JSON_UNESCAPED_UNICODE);   //打包成json
@@ -107,6 +112,8 @@
         $_SESSION['order_ids'] = $order_ids;// 用以PHP操作的订单ID数组
         $_SESSION['order_ids_json'] = json_encode($order_ids, JSON_UNESCAPED_UNICODE);// 用以前端操作的订单ID数组
     }
+    // $order_id = date('YmdHis', time()) . substr(microtime(), 2, 5) . sprintf('%03d', rand(0, 9));// 22位的订单id
+
     
     $res = array('status'=> $flag, 'order_id'=> $order_id );// 查询结果作为状态码返回，若是成功返回1，失败则是-1
     header('Content-Type:application/json');

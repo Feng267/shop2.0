@@ -13,5 +13,6 @@
         'data'=>$rows
     ];
     $result1 = json_encode($json,JSON_PRETTY_PRINT);
+    //echo "<pre>";
     echo $result1;
 ?>

@@ -48,6 +48,7 @@
         foreach($s1 as $key => $v){
             if($v != $s2[$key])
                 $exist = 0;
+            // echo $key . $v ;            
         }
         if($exist){
             $row = $rows;
@@ -55,7 +56,7 @@
         }
 
     }
-    // 若已有该商品，则更新该商品的数量和价格
+    // // 若已有该商品，则更新该商品的数量和价格
     if($exist){
         // $row = mysqli_fetch_assoc($result);
         $goods_number += $row['goods_number'] ;// 商品数量

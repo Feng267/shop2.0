@@ -233,3 +233,28 @@ update cat_info as c1 set rest_goods_shelf_total = (select sum(rest_goods_shelf_
 
 -- 删除临时表
 drop table cat_info_2;
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+update goods_info as g set cat_name = (select cat_name as c from cat_info where g.cat_id = c.cat_id);
+UPDATE sturgeon_summary s SET s.set_date = (SELECT set_date FROM sturgeon_set_pay p WHERE s.set_no = p.set_no ) WHERE s.merchant_no ="300900100390" ;
+-- 备份数据库
+mysqldump.exe -hlocalhost -P3306 -uroot -proot_com shop > D:\Practice\Mysql\backups\shop\shop_21.6.30.sql
+
+mysqldump.exe -h192.168.4.252 -P3306 -uroot_shop -proot_shop shop > D:\Practice\Mysql\backups\shop\shop_21.6.26_remote.sql
+-- 还原数据库
+source D:\Practice\Mysql\backups\shop\shop_goods_info_21.6.26.sql;
+
+select shop_cart_info.goods_id, cat_id, goods_info.goods_small_logo as goods_pic from shop_cart_info,goods_info where user_id = '12345678901' and shop_cart_info.goods_id = goods_info.goods_id;
+
+
+
+/* 9、创建商品分类信息表 */
+CREATE TABLE cat_info_ori(
+  `numb` int(11) NOT NULL AUTO_INCREMENT COMMENT '序号',
+  `cat_id` int NOT NULL COMMENT '分类id',
+  `cat_name` varchar(20) NOT NULL COMMENT '商品分类名称',
+  cat_pid int not null comment '上级分类id',
+  cat_level int not null comment '分类级别',
+  cat_icon varchar(200) default NULL comment '分类图标',
+  `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  primary KEY `numb` (`numb`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

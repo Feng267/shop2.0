@@ -29,6 +29,7 @@
         }
     }
 
+    // $flag = 0;// 密码是否正确
     $hash = password_hash("$password", PASSWORD_DEFAULT);// 密码的hash散列只
     $sql = "update user set password = '$hash' where user_id = $user_id";  //设置sql语句
     $result=mysqli_query($conn,$sql);//执行查询

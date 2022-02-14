@@ -49,6 +49,7 @@ let goods_attrs = [];// 商品属性
                 goods_total_price[j] = data.data[j].total_price; //获取数据库shop_cart_info表的商品总价
                 goods_attrs[j] = data.data[j].goods_attr;
             }  
+            // console.log(goods_attrs,typeof goods_attrs);          
         }
     });
 
@@ -68,6 +69,12 @@ let goods_attrs = [];// 商品属性
     }
     else
     {
+        // $('#cart_title').style.display='block';
+        // $('#background').style.display='block';
+        // $('#test1').style.display='block';
+        // $('#navigation').style.display='block';
+        // $('#jiesuan').style.display='block';
+
         $('#navigation').attr('style','display:block');
         $('#background').attr('style','display:block');
         $('#test1').attr('style','display:block');
@@ -138,6 +145,7 @@ $(function(){
 function increment(goodsId)
 {
     var new_num=parseInt($("#number"+goodsId).val())+1;
+    // alert(goodsId);
     if (new_num<=100)
     {
         $("#number"+goodsId).val(new_num);
@@ -229,7 +237,11 @@ function selectremove()
     $("#zongjia").text("￥0.00");
 
     // 重新刷新页面
+    // setTimeout(function (){
+    //     window.open('cart.php','_self');                        
+    // }, 1600);
     setTimeout(function (){                        		
+        // $(button).linkbutton('enable');
         location.reload();                        
         }, 1600);
     
@@ -249,8 +261,10 @@ function itemPrice(goodsId)
 
 // 删除一条商品
 function removeItem(goodsId){
+    // console.log(cart_indexes[goodsId], goodsId);
     $("#cart_item"+goodsId).remove();
     Itemnumber=Itemnumber-1;
+    //alert(Itemnumber);
     if(Itemnumber==0){
 
         $('#rayState').attr('style','display:block; position:absolute;bottom:0');
@@ -268,6 +282,7 @@ function removeItem(goodsId){
     else
         $('#jiesuan').attr('style', 'position: none; display:block'); 
     setTimeout(function (){                        		
+        // $(button).linkbutton('enable');
         location.reload();                        
         }, 1000);
     //获取页面信息返回删除数据库数据
@@ -291,6 +306,27 @@ function removeItem(goodsId){
 //全选
 function allSelect()
 {
+    /*if ($("input[type='checkbox']").prop("checked"))
+    {
+        //如果处于全选状态则取消全选
+        $("input[type='checkbox']").prop("checked",false);
+        $("#zongjia").text("总价：￥"+total_price.toFixed(2));
+        console.log($("input[type='checkbox']").val());
+    }
+    else
+    {
+        for (var i=0;i<Itemnumber;i++)
+        {
+            if ($("input[id='SELE"+i+"']").prop("checked"))
+            {
+                //$("input[type='checkbox']").prop("checked",true);
+            }
+            else
+            {
+                $("input[type='checkbox']").prop("checked",true);
+            }
+        }
+    }*/
     for (var i=0;i<Itemnumber;i++)
     {
         if ($("input[id='SELE"+i+"']").prop("checked")==false)
@@ -318,6 +354,7 @@ function Select() {
         {
             $("#zongjia").text("总价：￥"+total_price.toFixed(2));
             k = k+1;
+            //select1[i] = i;
         }
         else
         {
@@ -368,6 +405,8 @@ function allremove(){
 
 //添加一条商品到购物车
 function addItem(index){
+
+    // console.log(goods_id,index);
     //判断是否有这个商品
     var list = $("#test1").find("#cart_item"+index);
     if(list.length > 0)
@@ -391,6 +430,7 @@ function addItem(index){
 
         var img_url = goods_img[index];
 
+        //img_url = img_url.split("(")[1].replace(")","");
         jiage = goods_price[index];
         var price = goods_total_price[index];
 
@@ -501,6 +541,11 @@ function Pay()
                 select_index.push(i);// 选中的是第几个
             }
         }
+        // console.log(select_index, goods_id, goods_total_price, subtotal_price,goods_total_price1,total_price.toFixed(2),goods_amount1);
+        // let new_url = "get-orderInfo.php?goods_id=" + goods_id[select_index] + "&goods_number=" +  goods_amount1[0] + "&isCart=1";
+        // // console.log(new_url);
+        // window.location.href= new_url;  //跳转到支付页面
+
         select_index.forEach((v, i)=>{
             goods_info_arr[i] = {
                 numb: cart_indexes[i],
@@ -508,7 +553,16 @@ function Pay()
                 goods_number: goods_amount1[v],
                 goods_attr: goods_attrs[v]
             }
+            // console.log(v);
         })
+        console.log(goods_info_arr, 'goods_info_arr');
+        // let goods_info = {
+        //     goods_id: goods_id[select_index],
+        //     goods_number: goods_amount1[0],
+        //     // goods_attr: getGoodsAttr()
+        // }
+        // let goods_info_arr = [];
+        // goods_info_arr[0] = goods_info;
 
         let goods_info_json = JSON.stringify(goods_info_arr);// 商品信息
         var ajaxGoodsInfo = {
@@ -519,10 +573,15 @@ function Pay()
                 isCart: 1
             },
             success: function(value) {
+                // var order_detail = document.querySelector('.order_detail');// 所有订单
                 var obj = JSON.parse(value); // 将JSON格式的数据解析成数组
                 var status = obj.status;
                 if(status == 1)
                     window.location = "get-orderinfo.php";
+                // console.log(value, typeof value);
+                // putGoodsDetail(goods_detail); // 渲染页面
+
+
             },
             error: function(value) {
                 console.log(value);
@@ -598,7 +657,7 @@ function Pay()
                 var obj = JSON.parse(value); // 将JSON格式的数据解析成数组
                 var status = obj.status;
                 if(status == 1)// 成功
-                    window.location = "get-orderinfo.php";
+                    window.location = "get-orderInfo.php";
             },
             error: function(value) {
                 console.log(value);

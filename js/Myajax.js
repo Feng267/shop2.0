@@ -1,7 +1,3 @@
-/**
- * 自行封装的ajax函数，简略版
- * @returns 
- */
 // AJAX初始化函数，创建ajax异步对象
 function getXmlHttpObject(){
     var XMLHttp = null;

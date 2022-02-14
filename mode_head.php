@@ -24,7 +24,7 @@
             
         $f_item = '<div class="NotLogin">
         <a href="user_center.php"><img src="' . $img_src . '" style="width: 30px;height: 28px;border-radius: 50%;"></a>
-        　<span><a href="user_center.php">' . $user_name . ' </a></span>
+        　<span><a href="#">' . $user_name . ' </a></span>
         <span><form style="display: inline-block;" method="post"><input type="submit" name="outLogIn" value="退出登录" id="outt"></form></span>
     </div>';
 

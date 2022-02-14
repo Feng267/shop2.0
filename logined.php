@@ -7,9 +7,11 @@
     $img_src = "img/no_login.jpg";
     $user_name = "Hi~欢迎来到多多！";
     $a1_href = "login.php";
-    $a2_href = "user_center.php";
+    $a2_href = "login.php";
     $a1_text = "登录";
     $a2_text = "注册";
+    // $
+    // echo "<script>console.log('$user_id')</script>";
     // 如果已经登录，则显示用户名称和头像
     if(isset($user_id)){
         $sql = "select name, head_pic from user_info where tel = '$user_id'";  //设置sql语句
@@ -25,7 +27,7 @@
         <p class="user_name_text">' . $user_name . '</p>
         <p class="user_tip">
             <a href="' . $a1_href . '" class="user_login">' . $a1_text . '</a>
-            <a href="' . $a2_href . '" class="user_reg">' . $a2_text . '</a>
+            <a href="' . $a1_href . '" class="user_reg">' . $a2_text . '</a>
         </p>
     </div>'
 ?>

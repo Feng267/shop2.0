@@ -1,5 +1,7 @@
 <?php
     include "../fun.php";
+    // error_reporting(0);
+    // session_start();
     // 获取请求携带的参数
     $cat_one_id = $_GET['cat_one_id'];
     $cat_two_id = $_GET['cat_two_id'];
@@ -19,7 +21,7 @@
     }
 
     // 获取分类名称
-    $sql = "select cat_name from cat_info_ori where cat_id = $cat_one_id or cat_id = $cat_two_id or cat_id = $cat_three_id";
+    $sql = "select cat_name from cat_info where cat_id = $cat_one_id or cat_id = $cat_two_id or cat_id = $cat_three_id";
     $result = mysqli_query($conn,$sql);
     $count = mysqli_affected_rows($conn);
 
@@ -30,6 +32,7 @@
     header('Content-Type:application/json');
     $res_json = json_encode($res, JSON_UNESCAPED_UNICODE);   //打包成json
     echo $res_json;  //输出数据
+    
     
 ?>
 

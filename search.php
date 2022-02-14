@@ -258,7 +258,10 @@
 			<div class="sui-pagination pagination-large">
 				<ul id="page_num_wrap">
 					<li class="prev disabled" id="prev_btn">
+						<!-- <a href="#">上一页</a> -->
 						<a href="javascript:void(0);" data-cid="-1" onclick="alterPage(this);return false">«上一页</a>
+						<!-- <button data-cid="-1" onclick="alterPage(this)">上一页</button> -->
+						<!-- <span>上一页</span> -->
 					</li>
 					<li class="active page_num_btn">
 						<a href="javascript:void(0);" onclick="clickPage(this)" data-cid="1">1</a>
@@ -414,9 +417,13 @@
     let cat_id = urlAttr.cat_id;// 商品分类id
     let query = urlAttr.query;// 商品名称模糊搜索
 	pagenum = urlAttr.pagenum ? urlAttr.pagenum : 1;
+	// if(cat_level != undefined)
+	// 	console.log(cat_level, 'cat_level');
+	// console.log(window.location.pathname);
 	
 	// 请求商品列表信息
 	function getGoodsList( pagenum = 1, pagesize = 10){
+		// console.log(query, "qurey");
 		let ajaxGoodsList={
 			method: 'get',
 			url: 'https://api-hmugo-web.itheima.net/api/public/v1/goods/search',
@@ -427,18 +434,22 @@
 				pagesize: pagesize
 			},
 			success:function(value){
+				// var order_detail = document.querySelector('.order_detail');// 所有订单
 				var obj = JSON.parse(value);// 将JSON格式的数据解析成数组
 				var goods_list = obj.message.goods;
+				// console.log(goods_list);
 				// 渲染页面
 				total_page = Math.ceil(obj.message.total / 10);
 				total_pagenum.innerHTML = "共" + total_page + "页";
 				putGoodsList(goods_list);// 渲染商品数据
+				// console.log(total_page);
 				// 若页数少于5页，则删除多页的页码按钮
 				for(let i = 4; i >= total_page && total_page > 0; i--){
 					page_num_wrap.removeChild(page_num_btn[i]);
 				}
 				if(!total_page){
 					layerMsg(9);// 该商品关键字不存在
+					// console.log("exist");
 				}
 
 			},
@@ -452,6 +463,7 @@
 	// 渲染商品列表
 	function putGoodsList(goods_list){
 		goods_list.forEach(v=>{
+			// console.log(v);
 			let item = goods_item.cloneNode(true);
 			item.querySelector("a").href = "item.php?goods_id=" + v.goods_id;// 超链接
 			item.querySelector("i").innerHTML = v.goods_price;// 价格
@@ -466,7 +478,15 @@
 			}
 			goods_list_wrap.appendChild(item);// 插入子节点
 		})
+
+		// 非空时删除商品列表数组的第一个节点
+		// if(goods_list.length){
+			// children = goods_list_wrap.children;
+			// goods_list_wrap.removeChild(children[0]);
+		// }
+
 	}
+
 
 	// 上下页函数
 	function alterPage(e){
@@ -486,6 +506,7 @@
 		if(pagenum < 1 || pagenum > total_page)// 防止页码超出
 			pagenum += (-1) * next;
 		
+		// console.log(pagenum);
 		clearDomList(goods_list_wrap, 1);// 清除之前的商品
 		getGoodsList(pagenum);// 获取新的商品
 	}
@@ -494,6 +515,10 @@
 		page = parseInt(e.innerHTML);
 		clearDomList(goods_list_wrap, 1);// 清除之前的商品
 		getGoodsList(page);// 获取新的商品
+
+
+		// console.log(page);
+		// console.log(e.innerHTML, typeof e.innerHTML);
 	}
 
 	// 点击跳转输入的页面
@@ -506,8 +531,12 @@
 		}
 		else
 			layerMsg(8);// 弹窗警告
+			// console.log("error");
+		// console.log(page_input, typeof page_input);
 	}
 
+
+	// console.log(goods_bakaup);
 	// 请求商品分类信息
 	function getCategoryInfo(){
 		var ajaxMenus={
@@ -517,6 +546,7 @@
 			success:function(value){
 				var obj = JSON.parse(value);// 将JSON格式的数据解析成数组
 				let menus_info = obj.message;// 菜单信息
+				// console.log(menus_info);
 				let flag = 0;
 				for(let i = 0; i < 29; i++){
 					// 如果是一级分类则显示该一级分类下的第一个三级分类的商品
@@ -524,6 +554,7 @@
 						cat_id = menus_info[i].children[0].children[0].cat_id;
 						console.log(cat_id, 'cat_id');
 						break;
+						// flag = 1;
 					}
 					// 否则便是二级分类，则显示该二级分类下的第一个三级分类的商品
 					menus_info[i].children.forEach(v=>{
@@ -532,11 +563,15 @@
 							cat_id = v.children[0].cat_id;
 							console.log(cat_id, 'cat_id');
 							flag = 1;
+							// break;
 						}
 						
 					});
 					if(flag)
 						break;
+						// console.log(v);
+					
+						// console.log(cat_id, 'cat_id');
 				}
 				getGoodsList();// 获取商品列表
 			},
@@ -553,9 +588,12 @@
 	}
 	else
 		getGoodsList();
+		// console.log('');
 
 	// 调用函数
+	// getGoodsList();// 获取商品信息
 	exclusive(page_num_btn, "page_num_btn", "active");// 切换被点击效果
+	// console.log(page_num_btn);
 </script>
 </body>
 

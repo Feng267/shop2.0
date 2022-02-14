@@ -1,6 +1,5 @@
-/**
- * 封装的一些通用函数
- */
+// let query = '';// 搜索关键字
+
 //判断图片是否损坏
 function imgError(){ 
     var img = event.srcElement; 
@@ -106,6 +105,7 @@ function serarch_goods(){
     let url = window.location.pathname;// 当前页面的路径信息
     if(url == '/shop/search.php'){// 表示从搜索页面再次搜索
         cat_id = '';
+        // console.log("equip");
         try {
             clearDomList(goods_list_wrap, 1);// 清除之前的商品
 		    getGoodsList();// 获取新的商品
@@ -120,6 +120,7 @@ function serarch_goods(){
 
 // 清除当前dom元素
 function clearDomList(parent_node, limit = 0){
+    // console.log(parent_node);
     children = parent_node.children;
     //从后往前删除，防止下标错乱
     for(let i = children.length - 1; i >= limit; i--){

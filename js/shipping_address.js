@@ -28,6 +28,8 @@ $(function () {
                 tel1.value = tel[data.value];
                 post1.value = postcode[data.value];
                 number2 = number1[data.value];
+
+                //$("#big_frame").append("<?php include 'update_received_info.php'?>");
             }
             else
             {
@@ -37,6 +39,7 @@ $(function () {
                 consignee1.value = '';
                 tel1.value = '';
                 post1.value = '';
+                //$("#big_frame").append("<?php include 'insert_received_info.php'?>");
             }
         });
         form.on('submit(demo1)', function(data){
@@ -153,3 +156,21 @@ function show_address(numb1) {
 function return1() {
     window.location.href="javascript:history.go(-1)";
 }
+// function modify() {
+//     var addr1 = document.getElementById("address").value;
+//     var consignee1 = document.getElementById("consignee").value;
+//     var tel1 = document.getElementById("phone").value;
+//     var post1 = document.getElementById("post").value;
+//     $.ajax({
+//         async: false,
+//         type: "post", //以post方式传输数据
+//         url: "API/update_received_info.php",//数据目的地和值
+//         data: {number:number2,addr:addr1,consignee:consignee1,tel:tel1,post:post1},
+//         dataType: 'text',
+//         success: function (data) {
+//             if (data=200){
+//                 location.reload();
+//             }
+//         }
+//     });
+// }

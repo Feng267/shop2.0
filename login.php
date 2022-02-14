@@ -4,12 +4,16 @@
     <meta charset="UTF-8">
     <title>登录面板</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" class="ico">
-    <link rel="stylesheet" href="css/login.css">    
+    <link rel="stylesheet" href="css/login.css">
+
+    
     <!-- jQ文件 -->
     <script type="text/javascript" src="js/plugins/jquery/jquery.min.js"></script>
     <script src="./js/layui.all.js"></script>    <!-- 引用的框架  -->
+
     <script src="js/extend.js"></script><!-- 自行封装的公共函数  -->
 
+    
 </head>
 <body>
 
@@ -105,7 +109,7 @@
 
     <script>
     window.onload=function () {
-        //1.1获取需要的标签
+//1.1获取需要的标签
         let as = document.getElementsByClassName('c-header')[0].getElementsByTagName('a');
         let contents = document.getElementsByClassName('dom');
 
@@ -142,16 +146,126 @@ $url = "index.php";// 登录/注册成功后跳转的地址
 // 而若是因为点击了“立即购买”而需要登录的，登录后直接回道订单确定页面
 if(isset($_GET['goods_id']))
     $url = 'item.php?goods_id=' . $_GET['goods_id'];
-// $next_url = @$_SESSION['next_url'];// 未登录时点击了需要登录的界面
+
 // if(isset($next_url)){
 //     unset($_SESSION['next_url']);
 //     $url = $next_url;
-// }
+// } 
 if(isset($_POST['submit']))             //如果按登录按键
 {
     $user_id=$_POST['user'];         //获取输入的账号
     $password=$_POST['pwd']; //获取输入的密码
+    // echo "<script>console.log('user_id=" . $user_id . ",password=" . $password ."')</script>";
 
+    // 验证数据库账号密码是否一致
+    $sql = "select password from user where user_id='$user_id'";  //设置sql语句
+    $result=mysqli_query($conn,$sql);//执行查询
+    $row=mysqli_fetch_row($result);//获取密码
+    // echo $row[0];
+    // 验证通过
+    if (password_verify($password, $row[0])) {
+        $_SESSION['user_id']="$user_id";
+        // $url = "index.php";// 登录成功后跳转
+        // header("Location:$url");// 遇上bug，暂时放弃该方式跳转
+        // session_write_close();
+        $next_url = @$_SESSION['next_url'];// 未登录时点击了需要登录的界面
+        if(isset($next_url)){
+            unset($_SESSION['next_url']);
+            $url = $next_url;
+        }       
+        // echo  "<script>console.log('$url')</script>";         
+        // else
+        //     header("Location:index.php");
+        echo  "<script>window.location.href='" . $url . "'</script>";
+        exit(0);
+    } else {
+        echo '<script>layerMsg(13);</script>';
+    }
+    
+}
+
+// 注册
+if($_POST['register'] != ''){
+    // $register = $_POST['register'];
+    // echo "<script>console.log('$register')</script>";
+    // $_POST['register'] = '';
+    // if($_POST['register'] != ''){
+    //     $register = $_POST['register'];
+    //     echo "<script>console.log('$register')</script>";
+    // // $_POST['register'] = '';
+    // }else
+    //     echo "<script>console.log('register')</script>";
+    // 获取提交的参数
+    $user_id=$_POST['phone'];         //获取输入的手机号码
+    $name =$_POST['user'];         //获取输入的用户名
+    $password=$_POST['pwd']; //获取输入的密码
+    $hash = password_hash("$password", PASSWORD_DEFAULT);// 密码的hash散列只
+
+    // echo "<script>console.log('user_id=" . $user_id . ",name=" . $name  . ",password=" . $hash ."')</script>";
+
+    // 注册账号
+    $sql = "insert into user(user_id, password) values('$user_id','$hash')";  //设置sql语句
+    $result=mysqli_query($conn,$sql);//执行查询
+    $count = mysqli_affected_rows($conn);        
+
+    // 补充用户信息
+    if($count == 1){
+        $head_pic = "img/head_pic/default.jpg";// 默认头像
+        $sql = "insert into user_info(name, tel, head_pic) values('$name', '$user_id', '$head_pic');";
+        $result=mysqli_query($conn,$sql);//执行查询
+        $count = mysqli_affected_rows($conn); 
+    }
+    // $row=mysqli_fetch_row($result);//获取密码
+    // // echo $row[0];
+    // // 验证通过
+    if ($count == 1) {
+        $_SESSION['user_id']="$user_id";
+        // $url = "index.php";// 登录成功后跳转
+        // header("Location:$url");// 遇上bug，暂时放弃该方式跳转
+        $next_url = @$_SESSION['next_url'];// 未登录时点击了需要登录的界面
+        if(isset($next_url)){
+            unset($_SESSION['next_url']);
+            $url = $next_url;
+        }   
+        // session_write_close();
+        // echo  "<script>console.log('$url')</script>"; 
+        echo  "<script>window.location.href='" . $url . "'</script>";
+        exit(0);
+    }
+}
+
+
+// if(isset($_POST['return']))  //如果按返回键
+// {
+//     header("Location:index.php");
+// }
+// if(isset($_POST['goLogup']))  //如果按注册键
+// {
+//     header("Location:logup.php");
+// }
+?>
+
+
+</body>
+</html>
+
+
+<?php
+error_reporting(0);  // 抑制错误函数
+    if(!session_id())
+        session_start();
+include "fun.php";   // 连接服务器，连接数据库
+
+$url = "index.php";// 登录/注册成功后跳转的地址
+// 如果是在商品浏览页面因为没有登录而跳转到登录页面的，登录后跳转到该商品页面；
+// 而若是因为点击了“立即购买”而需要登录的，登录后直接回道订单确定页面
+if(isset($_GET['goods_id']))
+    $url = 'item.php?goods_id=' . $_GET['goods_id'];
+
+if(isset($_POST['submit']))             //如果按登录按键
+{
+    $user_id=$_POST['user'];         //获取输入的账号
+    $password=$_POST['pwd']; //获取输入的密码
     // 验证数据库账号密码是否一致
     $sql = "select password from user where user_id='$user_id'";  //设置sql语句
     $result=mysqli_query($conn,$sql);//执行查询
@@ -159,9 +273,6 @@ if(isset($_POST['submit']))             //如果按登录按键
     // 验证通过
     if (password_verify($password, $row[0])) {
         $_SESSION['user_id']="$user_id";
-        // $url = "index.php";// 登录成功后跳转
-        // header("Location:$url");// 遇上bug，暂时放弃该方式跳转
-        // session_write_close();
         $next_url = @$_SESSION['next_url'];// 未登录时点击了需要登录的界面
         if(isset($next_url)){
             unset($_SESSION['next_url']);
@@ -194,20 +305,16 @@ if($_POST['register'] != ''){
         $result=mysqli_query($conn,$sql);//执行查询
         $count = mysqli_affected_rows($conn); 
     }
-    // 验证通过
+    // // 验证通过
     if ($count == 1) {
         $_SESSION['user_id']="$user_id";
-        // $url = "index.php";// 登录成功后跳转
-        // header("Location:$url");// 遇上bug，暂时放弃该方式跳转
         $next_url = @$_SESSION['next_url'];// 未登录时点击了需要登录的界面
         if(isset($next_url)){
             unset($_SESSION['next_url']);
             $url = $next_url;
         }   
-        echo  "<script>window.location.href='" . $url . "'</script>";// 登录成功后跳转
+        echo  "<script>window.location.href='" . $url . "'</script>";
         exit(0);
     }
 }
 ?>
-</body>
-</html>

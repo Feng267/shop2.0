@@ -22,11 +22,15 @@
         include 'mode_head.php';
 		if(!session_id())
         	session_start();
+		
+			// session_start();
 		$goods_info = @$_SESSION['goods_info'];// 商品id_数组
+		//$json = json_encode($arr,JSON_PRETTY_PRINT);
 		if(!$goods_info)
 		{
 			$_SESSION['next_url'] = $_SERVER['REQUEST_URI'];// 记住当前页面的URL
 			$url = "login.php";
+			// header("Location: login.php");
 			echo  "<script>window.location.href='" . $url . "'</script>";
 			exit;
 		}
@@ -197,6 +201,15 @@
 	let order_total_text = document.querySelector("#order_total_text");// 商品总数量
 	let order_price_text = document.querySelector("#order_price_text");// 总价
 	let trade_wrap = document.querySelector('.trade');// 底部订单元素
+    // let page_num_btn = document.querySelectorAll('.page_num_btn');// 页码按钮
+
+	// 获取url携带的参数    
+    // let urlAttr = GetRequest();  
+    // let goods_id = urlAttr.goods_id;// 商品id
+    // // let goods_number = urlAttr.goods_number;// 商品名称	
+    // let isCart = urlAttr.isCart;// 是否从购物车跳转过来的
+    // goods_number = urlAttr.goods_number;
+	// console.log(isCart);
 
 	// 请求收货地址信息
 	function getAddressInfo( pagenum = 1, pagesize = 10){
@@ -223,12 +236,15 @@
 	// 渲染收货地址列表
 	function putAddressList(info){
 		info.forEach((v, i)=>{
+			// console.log(v, i);
 			let item = addr_item.cloneNode(true);
 			item.querySelector(".addr_name_1").innerHTML = v.received_people;// 收货人
 			item.querySelector(".addr_name").innerHTML = v.received_people ;// 收货人
 			item.querySelector(".addr_info").innerHTML = v.received_addr;// 收货人
 			item.querySelector(".addr_tel").innerHTML = v.received_tel;// 收货人
 			item.querySelector(".address_item").setAttribute("data-index",i);// 添加收货地址数组下标			
+			// item.querySelector(".address_item").onclick=changeAddress()// 添加收货地址数组下标
+			// changeAddress
 			if(i){// 不是默认地址时
 				// console.log(item.querySelector(".selected"), item.querySelector(".base"));
 				item.querySelector(".selected").className = "address_item con name ";
@@ -260,6 +276,7 @@
 				goods_id: goods_id
 			},
 			success: function(value) {
+				// var order_detail = document.querySelector('.order_detail');// 所有订单
 				var obj = JSON.parse(value); // 将JSON格式的数据解析成数组
 				var goods_detail = obj.message;
 				let item = goods_item.cloneNode(true);// 深度复制节点
@@ -269,12 +286,17 @@
 				for(let i in goods_attr){
 					goods_attr_text += i + ":  " + goods_attr[i] + " "
 				}
+				// goods_attr.forEach((v,i)=>{
+				// 	goods_attr_text += i + ": " + v + " "
+				// })
+				// console.log(goods_attr, typeof goods_attr);
 				putGoodsDetail(item,goods_detail, goods_number, goods_attr_text); // 渲染页面
 				
 				// 整理数据
 				goods_ids.push(goods_id);
 				goods_numbers.push(goods_number);
 				cat_ids.push(goods_detail.cat_id);
+				// cat_names.push(goods_detail.cat_name);
 				goods_prices.push(goods_detail.goods_price);
 				
 			},
@@ -287,6 +309,7 @@
 	
 	// 渲染商品信息到页面
 	function putGoodsDetail(item,info, goods_number = 1, goods_attr = '') {
+		// console.log(item,info, goods_number, typeof goods_number);
 		item.querySelector("img").src = info.goods_small_logo;
 		item.querySelector(".desc").innerHTML = info.goods_name;
 		item.querySelector(".price").innerHTML = info.goods_price;
@@ -296,8 +319,11 @@
 		order_price += info.goods_price * goods_number;// 订单总价
 		order_total += parseInt(goods_number);// 订单总数量
 		goods_warp.appendChild(item);	
+
 		order_summarys.push(info.goods_price * goods_number);
+
 		putOrderDetail();// 渲染订单信息
+
 	}
 
 
@@ -305,7 +331,9 @@
 	function putOrderDetail() {
 		order_price_text.innerHTML = "￥" + order_price;// 订单小计
 		trade_wrap.querySelector(".price").innerHTML = "￥" + order_price;// 实付价格
-		order_total_text.innerHTML = order_total;// 订单中商品的数量				
+		order_total_text.innerHTML = order_total;// 订单中商品的数量		
+		// createOrder();
+		
 	}
 
 	// 创建订单
@@ -329,15 +357,20 @@
 			goods_numbers: JSON.stringify(goods_numbers),
 			total:goods_ids.length
 		}
+		console.log(data, "data");
+
 		var ajaxCreateOrder = {
 			method: 'post',
 			url: "api/order/add.php",
 			data:data,
 			success: function(value) {
+				// console.log(value, 'value');
 				let obj = JSON.parse(value); // 将JSON格式的数据解析成数组
+				// console.log(value);
 				let status = parseInt(obj.status);
 				order_id = obj.order_id;
-				if(status == 1){// 订单创建成功
+				// console.log(status, typeof status);
+				if(status == 1){
 					layerMsg(10);
 					let url = "pay.php?order_price=" + order_price + "&order_id=" + order_id; 
 					setTimeout(function (){
@@ -345,7 +378,7 @@
 					}, 2000);
 				}
 				else
-					layerMsg(11);// 订单创建失败
+					layerMsg(11);
 				
 					
 			},
@@ -358,9 +391,11 @@
 
 	// 切换收货地址
 	function changeAddress(e){
+		// let addr_list = addr_detail_wrap.children;// 所有收货地址
 		let address_items_p = document.querySelectorAll('.addr-item');// 收货地址的父元素（li）
 		let address_items = document.querySelectorAll('.address_item');// 收货地址名字元素
 		let index = e.getAttribute('data-index');// 所选择的数组下标
+		// console.log(e, address_items);
 		for(let i = 0; i < address_items.length; i++){
 			address_items[i].className = "address_item con name ";
 		}
@@ -370,12 +405,18 @@
 			received_addr: address_items_p[index].querySelector('.addr_info').innerHTML,
 			received_tel: address_items_p[index].querySelector('.addr_tel').innerHTML,
 		}
+		console.log(info);
 		putSelectedAddress(info);// 渲染新选中的地址
 	}
 	getAddressInfo();// 获取收获地址
+	// getGoodsInfo(goods_id);
 	goods_info.forEach((v, i)=>{
+		// console.log(v, i);
 		getGoodsInfo(v.goods_id, v.goods_number, v.goods_attr);
 		goods_attrs.push(v.goods_attr);
+		// for(let goods_id  in v){
+		// 	getGoodsInfo(goods_id, v[goods_id]);
+		// }		
 	})
 
 	// 删除商品数组的第一个节点
